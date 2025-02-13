@@ -29,13 +29,14 @@
     "plugins": [
       "expo-router",
       [
-      "expo-camera",
+        "expo-camera",
         {
           "cameraPermission": "Donner la permission à $(PRODUCT_NAME) d'acceder a votre caméra",
           "microphonePermission": "Donner la permission à $(PRODUCT_NAME) d'acceder a votre microphone",
           "recordAudioAndroid": true
         }
-      ]
+      ],
+      "expo-barcode-scanner"
     ]
   }
 }
