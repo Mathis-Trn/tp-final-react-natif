@@ -27,14 +27,14 @@ export default function Page() {
             <Text style={styles.subtitle}>Veuillez vous connecter ou créer un compte</Text>
             <TouchableOpacity 
               style={styles.button}
-              onPress={() => router.push('/(auth)/sign-in')}
+              onPress={() => router.push('/sign-in')}
             >
               <Text style={styles.buttonText}>Connexion</Text>
             </TouchableOpacity>
 
             <TouchableOpacity 
               style={[styles.button, styles.secondaryButton]}
-              onPress={() => router.push('/(auth)/sign-up')}
+              onPress={() => router.push('/sign-up')}
             >
               <Text style={[styles.buttonText, styles.secondaryButtonText]}>
                 Créer un compte

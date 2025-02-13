@@ -1,6 +1,6 @@
 import { useUser } from '@clerk/clerk-expo';
 import { Text, View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, Link } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useMeals } from '../../../contexts/MealContext';
 
@@ -10,9 +10,7 @@ export default function Home() {
   const router = useRouter();
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Mes menus</Text>
-      
+    <View style={styles.container}>   
       <ScrollView style={styles.mealsList}>
         {meals.map(meal => {
           const totalCalories = meal.ingredients.reduce(
@@ -23,7 +21,7 @@ export default function Home() {
             <TouchableOpacity
               key={meal.id}
               style={styles.mealItem}
-              onPress={() => router.push(`/(main)/(home)/${meal.id}`)}
+              onPress={() => router.push(`/${meal.id}`)}
             >
               <Text style={styles.mealName}>{meal.name}</Text>
               <Text style={styles.mealCalories}>
@@ -34,12 +32,9 @@ export default function Home() {
         })}
       </ScrollView>
 
-      <TouchableOpacity 
-        style={styles.fab}
-        onPress={() => router.push('/(main)/add/add')}
-      >
-        <Ionicons name="add" size={30} color="#fff" />
-      </TouchableOpacity>
+      <Link style={styles.fab} href="/add">
+        <Ionicons name="add" size={60} color="#fff" />
+      </Link>
     </View>
   );
 }

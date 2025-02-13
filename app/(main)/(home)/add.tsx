@@ -5,11 +5,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { useMeals } from '../../../contexts/MealContext';
 
 export default function Add() {
-  const { addMeal, updateMeal, meals } = useMeals();
   const router = useRouter();
   const params = useLocalSearchParams();
   const isEditing = !!params.mealId;
-
+  const { addMeal, updateMeal, meals, scannedProduct, setScannedProduct } = useMeals();
   const [name, setName] = useState('');
   const [ingredients, setIngredients] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -24,6 +23,13 @@ export default function Add() {
       }
     }
   }, [params.mealId]);
+
+  useEffect(() => {
+    if (scannedProduct) {
+      setIngredients([...ingredients, scannedProduct]);
+      setScannedProduct(null); 
+    }
+  }, [scannedProduct]);
 
   const searchFood = async (query: string) => {
     const APP_ID = process.env.EXPO_PUBLIC_EDAMAM_APP_ID;
@@ -40,6 +46,14 @@ export default function Add() {
     }
   };
 
+  const handleBack = () => {
+    if (isEditing) {
+      router.push(`/${params.mealId}`);
+    } else {
+      router.push('/home');
+    }
+  };
+
   const saveMeal = () => {
     const meal = {
       id: isEditing ? params.mealId as string : Date.now().toString(),
@@ -52,7 +66,7 @@ export default function Add() {
     } else {
       addMeal(meal);
     }
-    router.back();
+    handleBack();
   };
 
   return (
@@ -61,41 +75,51 @@ export default function Add() {
         style={styles.nameInput}
         value={name}
         onChangeText={setName}
-        placeholder="Nom du repas"
+        placeholder="Nom du menu"
       />
 
-      <TextInput
-        style={styles.searchInput}
-        value={searchQuery}
-        onChangeText={(text) => {
-          setSearchQuery(text);
-          if (text.length > 2) searchFood(text);
-        }}
-        placeholder="Rechercher un ingrédient..."
-      />
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={[styles.searchInput, { flex: 1 }]}
+          value={searchQuery}
+          onChangeText={(text) => {
+            setSearchQuery(text);
+            if (text.length > 2) searchFood(text);
+          }}
+          placeholder="Rechercher un ingrédient..."
+        />
+        <TouchableOpacity 
+          style={styles.cameraButton}
+          onPress={() => router.push('/camera')}
+        >
+          <Ionicons name="barcode-outline" size={24} color="#000" />
+        </TouchableOpacity>
+      </View>
 
-      <ScrollView style={styles.searchResults}>
-        {searchResults.map((result: any, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.searchItem}
-            onPress={() => {
-              setIngredients([...ingredients, {
-                id: result.food.foodId,
-                name: result.food.label,
-                calories: result.food.nutrients.ENERC_KCAL
-              }]);
-              setSearchQuery('');
-              setSearchResults([]);
-            }}
-          >
-            <Text>{result.food.label}</Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+      {searchQuery.length > 0 && (
+        <ScrollView style={styles.searchResults}>
+          {searchResults.map((result: any, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.searchItem}
+              onPress={() => {
+                setIngredients([...ingredients, {
+                  id: result.food.foodId,
+                  name: result.food.label,
+                  calories: result.food.nutrients.ENERC_KCAL
+                }]);
+                setSearchQuery('');
+                setSearchResults([]);
+              }}
+            >
+              <Text>{result.food.label}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      )}
 
       <Text style={styles.subtitle}>Ingrédients sélectionnés</Text>
-      <ScrollView style={styles.ingredientsList}>
+      <ScrollView style={[styles.ingredientsList, !searchQuery.length && { flex: 1 }]}>
         {ingredients.map((ingredient, index) => (
           <View key={index} style={styles.ingredientItem}>
             <Text>{ingredient.name}</Text>
@@ -174,5 +198,20 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: 10,
+  },
+  cameraButton: {
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
