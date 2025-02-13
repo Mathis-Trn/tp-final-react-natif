@@ -1,0 +1,42 @@
+{
+  "expo": {
+    "name": "tp-final-react-natif",
+    "slug": "tp-final-react-natif",
+    "scheme": "tp-final-react-natif",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Donner la permission à $(PRODUCT_NAME) d'acceder a votre caméra",
+          "microphonePermission": "Donner la permission à $(PRODUCT_NAME) d'acceder a votre microphone",
+          "recordAudioAndroid": true
+        }
+      ],
+      "expo-barcode-scanner"
+    ]
+  }
+}
